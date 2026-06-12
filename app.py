@@ -23,6 +23,10 @@ def shutdown_server():
     # Send SIGINT to the current process to stop Flask development server cleanly
     os.kill(os.getpid(), signal.SIGINT)
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 @app.route('/api/v1/message', methods=['POST'])
 def post_message():
     data = request.get_json() or {}
