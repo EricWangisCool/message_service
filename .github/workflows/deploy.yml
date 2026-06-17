@@ -12,6 +12,10 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    # 宣告權限以允許讀取 repo 內容並向 AWS 要求 OIDC ID Token
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
     - name: Checkout
@@ -20,8 +24,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Login to Amazon ECR
