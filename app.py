@@ -20,8 +20,14 @@ state = {
 def shutdown_server():
     time.sleep(0.5)
     print("Shutting down the server as requested (POST /api/v1/message called 3 times)...")
-    # Send SIGINT to the current process to stop Flask development server cleanly
-    os.kill(os.getpid(), signal.SIGINT)
+    
+    # Check if running inside Docker container or under Gunicorn (parent PID is 1 or /.dockerenv exists)
+    if os.path.exists('/.dockerenv') or os.getppid() == 1:
+        # Send SIGTERM to parent process (Gunicorn master) to stop the entire container
+        os.kill(os.getppid(), signal.SIGTERM)
+    else:
+        # Send SIGINT to the current process to stop Flask development server cleanly
+        os.kill(os.getpid(), signal.SIGINT)
 
 @app.route('/health', methods=['GET'])
 def health_check():
