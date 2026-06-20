@@ -17,4 +17,4 @@ COPY . /app/
 
 EXPOSE 5003
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5003", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5003", "--access-logfile", "-", "--error-logfile", "-", "app:app"]
